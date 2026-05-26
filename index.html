@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build It With AI — Interactive Product Builder | Jade Janosi</title>
+<meta name="description" content="The interactive 6-phase tool for creating and selling digital products with AI. Fill in your details once — every prompt auto-fills.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal-900: #04342C;
+    --teal-800: #085041;
+    --teal-700: #0F6E56;
+    --teal-600: #1A8A6A;
+    --teal-500: #1D9E75;
+    --teal-300: #5DCAA5;
+    --teal-200: #9FE1CB;
+    --teal-100: #C8F0E2;
+    --teal-50:  #E1F5EE;
+    --ink: #0D1F1A;
+    --ink-mid: #2A3D35;
+    --muted: #5A7268;
+    --border: rgba(15,110,86,0.18);
+    --border-strong: rgba(15,110,86,0.35);
+    --bg: #F7FBFA;
+    --bg-card: #FFFFFF;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Open Sans', system-ui, sans-serif;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.7; min-height: 100vh; }
+
+  /* HEADER */
+  .site-header {
+    background: var(--teal-900);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+  .header-brand { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: #fff; }
+  .header-brand span { color: var(--teal-200); }
+  .header-back { font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; color: var(--teal-200); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; transition: opacity 0.2s; }
+  .header-back:hover { opacity: 1; }
+
+  /* HERO */
+  .tool-hero {
+    background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-800) 50%, #0D3D30 100%);
+    padding: 60px 32px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 60%, rgba(29,158,117,0.2) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(93,202,165,0.12) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-badge { display: inline-block; font-family: var(--font-body); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal-200); background: rgba(29,158,117,0.18); border: 1px solid rgba(93,202,165,0.3); padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; position: relative; z-index: 1; }
+  .tool-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 700; color: #fff; line-height: 1.15; max-width: 700px; margin: 0 auto 16px; position: relative; z-index: 1; }
+  .tool-hero h1 em { color: var(--teal-200); font-style: italic; }
+  .tool-hero p { font-size: 1rem; color: rgba(255,255,255,0.72); max-width: 520px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* PHASE NAV */
+  .phase-nav-bar { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; position: sticky; top: 57px; z-index: 90; }
+  .phase-nav-bar::-webkit-scrollbar { display: none; }
+  .phase-tab { display: flex; align-items: center; gap: 8px; padding: 14px 18px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; transition: all 0.2s; flex-shrink: 0; background: none; border-top: none; border-left: none; border-right: none; text-transform: uppercase; letter-spacing: 0.05em; }
+  .phase-tab:hover { color: var(--teal-600); }
+  .phase-tab.active { color: var(--teal-700); border-bottom-color: var(--teal-500); }
+  .phase-tab.done { color: var(--teal-600); }
+  .tab-num { width: 20px; height: 20px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; color: var(--muted); flex-shrink: 0; transition: all 0.2s; }
+  .phase-tab.active .tab-num { background: var(--teal-500); color: #fff; }
+  .phase-tab.done .tab-num { background: var(--teal-700); color: #fff; }
+
+  /* MAIN */
+  .tool-main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+  .phase-panel { display: none; animation: fadeIn 0.25s ease; }
+  .phase-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 32px; margin-bottom: 20px; }
+  .card-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .phase-badge { width: 44px; height: 44px; border-radius: 8px; background: var(--teal-50); border: 1px solid var(--teal-200); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--teal-700); flex-shrink: 0; }
+  .card-header h2 { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; color: var(--ink); line-height: 1.2; margin-bottom: 4px; }
+  .card-header p { font-size: 0.88rem; color: var(--muted); margin: 0; }
+
+  /* LABELS */
+  .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-600); margin: 24px 0 12px; }
+
+  /* INPUTS */
+  .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 4px; }
+  @media (max-width: 600px) { .inputs-grid { grid-template-columns: 1fr; } }
+  .full-width { grid-column: 1 / -1; }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-group label { font-size: 0.8rem; font-weight: 600; color: var(--ink-mid); }
+  .input-group input, .input-group select { font-family: var(--font-body); font-size: 0.9rem; color: var(--ink); background: var(--bg); border: 1px solid var(--border-strong); border-radius: 6px; padding: 10px 14px; transition: border-color 0.2s, box-shadow 0.2s; outline: none; width: 100%; }
+  .input-group input:focus, .input-group select:focus { border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(29,158,117,0.12); }
+  .input-group input::placeholder { color: var(--muted); opacity: 0.7; }
+
+  /* BUTTONS */
+  .btn-generate { width: 100%; padding: 14px 24px; background: var(--teal-700); color: #fff; font-family: var(--font-body); font-size: 0.92rem; font-weight: 700; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px; transition: background 0.2s, transform 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-generate:hover { background: var(--teal-600); transform: translateY(-1px); }
+  .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* BLUEPRINT OUTPUT */
+  .blueprint-output { background: var(--teal-50); border: 1px solid var(--teal-200); border-radius: 8px; padding: 24px; margin-top: 24px; display: none; }
+  .blueprint-output h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--teal-800); margin-bottom: 14px; }
+  .bp-content { font-size: 0.9rem; color: var(--ink-mid); line-height: 1.75; white-space: pre-wrap; }
+  .bp-loading { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--teal-700); }
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--teal-200); border-top-color: var(--teal-600); border-radius: 50%; animation: spin 0.75s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FORMULA */
+  .formula-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .formula-box { background: var(--teal-50); border: 1px solid var(--teal-200); border-radius: 6px; padding: 10px 14px; text-align: center; min-width: 86px; }
+  .formula-box .f-main { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--teal-800); display: block; line-height: 1.2; }
+  .formula-box .f-sub { font-size: 0.72rem; color: var(--teal-600); display: block; }
+  .formula-box.result { background: var(--teal-700); border-color: var(--teal-700); }
+  .formula-box.result .f-main { color: #fff; }
+  .formula-box.result .f-sub { color: var(--teal-200); }
+  .formula-arrow { font-size: 1.1rem; color: var(--teal-300); flex-shrink: 0; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; padding: 0; margin: 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; color: var(--ink-mid); cursor: pointer; transition: color 0.15s; user-select: none; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li.checked { color: var(--muted); text-decoration: line-through; opacity: 0.6; }
+  .check-box { width: 18px; height: 18px; border: 1.5px solid var(--border-strong); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: var(--bg-card); }
+  .checked .check-box { background: var(--teal-600); border-color: var(--teal-600); }
+  .check-icon { width: 10px; height: 10px; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 0.15s; }
+  .checked .check-icon { opacity: 1; }
+
+  /* PROMPTS */
+  .prompt-block { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 14px; }
+  .prompt-block:hover { border-color: var(--border-strong); }
+  .prompt-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-700); margin-bottom: 10px; }
+  .prompt-text { font-size: 0.86rem; color: var(--ink-mid); line-height: 1.7; margin-bottom: 14px; white-space: pre-wrap; }
+  .prompt-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-copy { font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; padding: 8px 16px; background: var(--teal-700); color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
+  .btn-copy:hover { background: var(--teal-600); }
+
+  /* MISC */
+  .info-box { background: var(--teal-50); border-left: 3px solid var(--teal-500); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-bottom: 4px; font-size: 0.88rem; color: var(--ink-mid); line-height: 1.6; }
+  .info-box strong { color: var(--teal-800); font-weight: 600; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .pill { background: var(--teal-50); border: 1px solid var(--teal-200); border-radius: 20px; padding: 5px 14px; font-size: 0.8rem; color: var(--teal-800); font-weight: 500; }
+  .loop-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+  .loop-step { background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+  .loop-step.highlight { background: var(--teal-50); border-color: var(--teal-200); color: var(--teal-800); font-weight: 600; }
+  .loop-arrow { color: var(--teal-300); font-size: 1rem; flex-shrink: 0; }
+  .pillars-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 4px; }
+  @media (max-width: 500px) { .pillars-grid { grid-template-columns: 1fr; } }
+  .pillar-card { background: var(--teal-50); border: 1px solid var(--teal-200); border-radius: 8px; padding: 16px; text-align: center; }
+  .pillar-icon { font-size: 1.6rem; margin-bottom: 8px; display: block; }
+  .pillar-title { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--teal-800); display: block; margin-bottom: 2px; }
+  .pillar-sub { font-size: 0.75rem; color: var(--teal-600); }
+
+  /* NAV FOOTER */
+  .phase-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); gap: 12px; }
+  .btn-prev { font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: all 0.15s; background: var(--bg-card); color: var(--ink-mid); border: 1px solid var(--border-strong); display: flex; align-items: center; gap: 6px; }
+  .btn-prev:hover { background: var(--teal-50); }
+  .btn-next { font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: all 0.15s; background: var(--teal-700); color: #fff; border: none; margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .btn-next:hover { background: var(--teal-600); }
+  .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal-500); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* COMPLETION */
+  .completion-banner { background: linear-gradient(135deg, var(--teal-800), var(--teal-700)); border-radius: 8px; padding: 36px 32px; text-align: center; margin-top: 20px; color: #fff; }
+  .completion-banner h3 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .completion-banner p { color: rgba(255,255,255,0.8); font-size: 0.92rem; margin-bottom: 20px; }
+  .btn-completion { display: inline-block; background: var(--teal-200); color: var(--teal-900); font-family: var(--font-body); font-weight: 700; font-size: 0.85rem; padding: 12px 28px; border-radius: 6px; text-decoration: none; transition: background 0.2s; }
+  .btn-completion:hover { background: var(--teal-100); }
+
+  /* FOOTER */
+  .site-footer { text-align: center; padding: 24px; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); }
+  .site-footer a { color: var(--teal-600); text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--teal-800); color: #fff; font-size: 0.82rem; font-weight: 600; padding: 10px 18px; border-radius: 6px; z-index: 9999; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 640px) {
+    .site-header { padding: 16px 20px; }
+    .tool-hero { padding: 44px 20px 36px; }
+    .phase-nav-bar { padding: 0 12px; }
+    .phase-tab { padding: 12px 10px; font-size: 0.72rem; }
+    .tool-main { padding: 24px 16px 60px; }
+    .card { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">Build It <span>With AI</span></div>
+  <a href="https://jadejanosi.com" class="header-back">← jadejanosi.com</a>
+</header>
+
+<div class="tool-hero">
+  <div class="hero-badge">Interactive Product Builder</div>
+  <h1>From raw idea to <em>live, selling product</em> in 6 phases.</h1>
+  <p>Fill in your details once. Every AI prompt across all phases auto-fills with your specifics — no more generic outputs.</p>
+</div>
+
+<nav class="phase-nav-bar" aria-label="Phase navigation">
+  <button class="phase-tab active" id="tab-0" onclick="goToPhase(0)"><span class="tab-num">S</span>Setup</button>
+  <button class="phase-tab" id="tab-1" onclick="goToPhase(1)"><span class="tab-num">1</span>Validate</button>
+  <button class="phase-tab" id="tab-2" onclick="goToPhase(2)"><span class="tab-num">2</span>Design</button>
+  <button class="phase-tab" id="tab-3" onclick="goToPhase(3)"><span class="tab-num">3</span>Build</button>
+  <button class="phase-tab" id="tab-4" onclick="goToPhase(4)"><span class="tab-num">4</span>Package</button>
+  <button class="phase-tab" id="tab-5" onclick="goToPhase(5)"><span class="tab-num">5</span>Sell</button>
+  <button class="phase-tab" id="tab-6" onclick="goToPhase(6)"><span class="tab-num">6</span>Scale</button>
+</nav>
+
+<main class="tool-main">
+
+  <!-- SETUP -->
+  <div class="phase-panel active" id="panel-0">
+    <div class="card">
+      <div class="card-header">
+        <div class="phase-badge">⚙</div>
+        <div>
+          <h2>Your product details</h2>
+          <p>Fill these in once. Every AI prompt across all 6 phases will use them automatically.</p>
+        </div>
+      </div>
+      <div class="inputs-grid">
+        <div class="input-group full-width">
+          <label for="inp-audience">Who is your audience?</label>
+          <input id="inp-audience" type="text" placeholder="e.g. moms building an online business from home" />
+        </div>
+        <div class="input-group full-width">
+          <label for="inp-topic">What is your product about?</label>
+          <input id="inp-topic" type="text" placeholder="e.g. using AI tools to create and sell digital products" />
+        </div>
+        <div class="input-group">
+          <label for="inp-pain">Their biggest pain / struggle</label>
+          <input id="inp-pain" type="text" placeholder="e.g. no time, don't know where to start" />
+        </div>
+        <div class="input-group">
+          <label for="inp-outcome">The outcome your product delivers</label>
+          <input id="inp-outcome" type="text" placeholder="e.g. a live digital product ready to sell" />
+        </div>
+        <div class="input-group">
+          <label for="inp-type">Product type</label>
+          <select id="inp-type">
+            <option value="PDF guide / playbook">PDF guide / playbook</option>
+            <option value="template pack">Template pack</option>
+            <option value="mini-course">Mini-course</option>
+            <option value="prompt pack">Prompt pack</option>
+            <option value="toolkit / bundle">Toolkit / bundle</option>
+            <option value="system / dashboard">System / dashboard</option>
+            <option value="checklist / swipe file">Checklist / swipe file</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="inp-obstacle">Common obstacle they face</label>
+          <input id="inp-obstacle" type="text" placeholder="e.g. starting from scratch or burning out" />
+        </div>
+      </div>
+      <button class="btn-generate" id="gen-btn" onclick="generateBlueprint()">✦ Generate my product blueprint</button>
+      <div class="blueprint-output" id="blueprint-output">
+        <h3>✦ Your product blueprint</h3>
+        <div class="bp-content" id="bp-content"></div>
+      </div>
+    </div>
+    <div class="phase-footer">
+      <div></div>
+      <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+      <button class="btn-next" onclick="goToPhase(1)">Phase 1: Validate →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase-panel" id="panel-1">
+    <div class="card">
+      <div class="card-header"><div class="phase-badge">01</div><div><h2>Validate</h2><p>Anchor your idea in real demand before creating a single page.</p></div></div>
+      <p class="section-label">The transformation test</p>
+      <div class="formula-row">
+        <div class="formula-box"><span class="f-main">Who</span><span class="f-sub">your audience</span></div>
+        <span class="formula-arrow">→</span>
+        <div class="formula-box"><span class="f-main">From</span><span class="f-sub">their pain</span></div>
+        <span class="formula-arrow">→</span>
+        <div class="formula-box"><span class="f-main">To</span><span class="f-sub">their result</span></div>
+        <span class="formula-arrow">=</span>
+        <div class="formula-box result"><span class="f-main">Your product</span></div>
+      </div>
+      <div class="info-box" style="margin-top:14px;"><strong>If you can't complete the transformation statement, stop.</strong> Your idea isn't ready yet. Use the prompts below to get there.</div>
+      <p class="section-label">Research checklist</p>
+      <ul class="checklist">
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Search marketplaces for existing offers in your niche</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Read 10+ reviews — note the exact language your audience uses</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Identify what's missing or unclear in existing products</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Confirm people are already paying for something like this</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Complete your transformation statement before moving on</li>
+      </ul>
+      <p class="section-label">AI prompts</p>
+      <div class="prompt-block">
+        <div class="prompt-label">Audience research prompt</div>
+        <div class="prompt-text" id="p1a">Act as a market research analyst. I'm creating a digital product for [AUDIENCE] about [TOPIC]. Analyze what problems they struggle with most, what language they use to describe those problems, what solutions already exist, and what gaps are most common. Give me 5 pain points, 5 phrases they likely use, and 3 product angles I could take.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p1a', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">Transformation statement generator</div>
+        <div class="prompt-text" id="p1b">Write 5 transformation statements for a digital product using this format: "This product helps [WHO] go from [PAIN STATE] to [DESIRED RESULT] without [COMMON OBSTACLE]." My audience is [AUDIENCE], my topic is [TOPIC], their pain is [PAIN], the outcome is [OUTCOME], and the obstacle to avoid is [OBSTACLE]. Make each feel specific, believable, and outcome-focused.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p1b', this)">Copy filled prompt</button></div>
+      </div>
+    </div>
+    <div class="phase-footer">
+      <button class="btn-prev" onclick="goToPhase(0)">← Setup</button>
+      <div class="progress-track"><div class="progress-fill" style="width:17%"></div></div>
+      <button class="btn-next" onclick="goToPhase(2)">Phase 2: Design →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-panel" id="panel-2">
+    <div class="card">
+      <div class="card-header"><div class="phase-badge">02</div><div><h2>Design</h2><p>Build your framework first. AI fills in the language later. You are the architect.</p></div></div>
+      <div class="info-box"><strong>Structure beats volume every time.</strong> Design your product as stages, pillars, or steps — then use AI to expand each. Your structure becomes proprietary.</div>
+      <p class="section-label">Proven structures to borrow</p>
+      <div class="pill-row">
+        <span class="pill">5-step system</span><span class="pill">3-pillar model</span><span class="pill">Before / after bridge</span><span class="pill">Problem → solution → result</span><span class="pill">Stages of transformation</span>
+      </div>
+      <p class="section-label">Scope checklist</p>
+      <ul class="checklist">
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Define exactly what's in vs. out of this product</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>One product = one transformation — don't cram everything in</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Eliminate before you add — ruthless scope discipline</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Can someone finish this in one sitting?</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Start small — validate, then expand</li>
+      </ul>
+      <p class="section-label">AI prompts</p>
+      <div class="prompt-block">
+        <div class="prompt-label">Framework design prompt</div>
+        <div class="prompt-text" id="p2a">I'm creating a [PRODUCT_TYPE] that helps [AUDIENCE] go from [PAIN] to [OUTCOME]. Design a named framework for this product with 4–6 stages or pillars. For each stage, give it a memorable name, a one-sentence description, and the key action the buyer takes. Make it feel proprietary and memorable — like something I could name and brand.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p2a', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">Outline generator prompt</div>
+        <div class="prompt-text" id="p2b">Create a complete product outline for a [PRODUCT_TYPE] on [TOPIC] for [AUDIENCE]. Include section names, what each section teaches or delivers, and what the buyer can do after completing it. Structure it so there's clear progression from confusion to confidence. Keep it tight — prioritize outcomes over volume.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p2b', this)">Copy filled prompt</button></div>
+      </div>
+    </div>
+    <div class="phase-footer">
+      <button class="btn-prev" onclick="goToPhase(1)">← Validate</button>
+      <div class="progress-track"><div class="progress-fill" style="width:33%"></div></div>
+      <button class="btn-next" onclick="goToPhase(3)">Phase 3: Build →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-panel" id="panel-3">
+    <div class="card">
+      <div class="card-header"><div class="phase-badge">03</div><div><h2>Build</h2><p>You outline → AI drafts → you refine → AI polishes → you format. Repeat.</p></div></div>
+      <p class="section-label">The AI build loop</p>
+      <div class="loop-row">
+        <span class="loop-step">You outline</span><span class="loop-arrow">→</span>
+        <span class="loop-step">AI drafts</span><span class="loop-arrow">→</span>
+        <span class="loop-step">You refine</span><span class="loop-arrow">→</span>
+        <span class="loop-step">AI polishes</span><span class="loop-arrow">→</span>
+        <span class="loop-step highlight">You format</span>
+      </div>
+      <div class="info-box" style="margin-top:14px;">Your job is to <strong>edit with judgment</strong> — cut fluff, add nuance, verify facts, and test the product as your buyer would.</div>
+      <p class="section-label">Build checklist</p>
+      <ul class="checklist">
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Draft each section using the section drafter prompt below</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Cut anything that doesn't move the buyer forward</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Add your own nuance, examples, and voice</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Verify any facts AI generates — don't blindly trust output</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Test the product as your buyer would before packaging</li>
+      </ul>
+      <p class="section-label">AI prompts</p>
+      <div class="prompt-block">
+        <div class="prompt-label">Section drafter prompt</div>
+        <div class="prompt-text" id="p3a">Write the content for [SECTION NAME] of my [PRODUCT_TYPE] on [TOPIC]. My audience is [AUDIENCE] and their biggest struggle with this section is [PAIN]. Include: a brief explanation, a concrete example, 3 actionable steps, and a reflection question. Tone: warm, direct, practical — not academic. Write for someone who is smart but time-poor.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3a', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">Multi-version intro generator</div>
+        <div class="prompt-text" id="p3b">Write 3 versions of the introduction for my [PRODUCT_TYPE] on [TOPIC]: one story-driven, one problem-first, and one results-first. My buyer is [AUDIENCE] and the outcome they get is [OUTCOME]. I'll combine the best elements from each version.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3b', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">Worksheet builder prompt</div>
+        <div class="prompt-text" id="p3c">Create a 1-page worksheet for the [SECTION NAME] section of my product. Include: a brief context sentence, 3–5 fill-in-the-blank prompts, 2 short-answer questions, and a "done when" completion checkbox. Format it so someone can complete it in under 10 minutes. Topic: [TOPIC]. Audience: [AUDIENCE].</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3c', this)">Copy filled prompt</button></div>
+      </div>
+    </div>
+    <div class="phase-footer">
+      <button class="btn-prev" onclick="goToPhase(2)">← Design</button>
+      <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+      <button class="btn-next" onclick="goToPhase(4)">Phase 4: Package →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-panel" id="panel-4">
+    <div class="card">
+      <div class="card-header"><div class="phase-badge">04</div><div><h2>Package</h2><p>Good content in poor packaging doesn't sell. Packaging is how buyers feel before they open it.</p></div></div>
+      <p class="section-label">Packaging checklist</p>
+      <ul class="checklist">
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Outcome-driven product name — not vague or generic</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>"Read Me First" onboarding file written and included</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Logical folder / module structure — easy to navigate</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Format matched to how your audience actually consumes content</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>At least one 15-minute quick win early in the product</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Clear "next step" at the end — don't leave buyers stranded</li>
+      </ul>
+      <p class="section-label">AI prompts</p>
+      <div class="prompt-block">
+        <div class="prompt-label">Product name brainstorm</div>
+        <div class="prompt-text" id="p4a">Brainstorm 10 name options for a [PRODUCT_TYPE] that helps [AUDIENCE] achieve [OUTCOME]. Make names specific, outcome-driven, and memorable. Mix styles: some descriptive, some aspirational, some framework-named. Flag the top 3 with a reason why they'd stand out in a crowded market.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p4a', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">"Read Me First" onboarding writer</div>
+        <div class="prompt-text" id="p4b">Write a friendly "Read Me First" document for my [PRODUCT_TYPE] for [AUDIENCE] on [TOPIC]. Welcome the buyer, explain what's included, tell them exactly where to start, give one tip for getting the most value, and set expectations for what they'll achieve. Tone: encouraging, clear, and human. Under 200 words.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p4b', this)">Copy filled prompt</button></div>
+      </div>
+    </div>
+    <div class="phase-footer">
+      <button class="btn-prev" onclick="goToPhase(3)">← Build</button>
+      <div class="progress-track"><div class="progress-fill" style="width:67%"></div></div>
+      <button class="btn-next" onclick="goToPhase(5)">Phase 5: Sell →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase-panel" id="panel-5">
+    <div class="card">
+      <div class="card-header"><div class="phase-badge">05</div><div><h2>Sell</h2><p>Markets reward visibility and clarity — not quiet excellence.</p></div></div>
+      <p class="section-label">The messaging formula</p>
+      <div class="formula-row">
+        <div class="formula-box"><span class="f-main">Call out</span><span class="f-sub">the pain</span></div>
+        <span class="formula-arrow">+</span>
+        <div class="formula-box"><span class="f-main">Show</span><span class="f-sub">the shortcut</span></div>
+        <span class="formula-arrow">+</span>
+        <div class="formula-box"><span class="f-main">Prove</span><span class="f-sub">the outcome</span></div>
+        <span class="formula-arrow">+</span>
+        <div class="formula-box"><span class="f-main">Remove</span><span class="f-sub">the risk</span></div>
+        <span class="formula-arrow">=</span>
+        <div class="formula-box result"><span class="f-main">The sale</span></div>
+      </div>
+      <p class="section-label">Sales checklist</p>
+      <ul class="checklist">
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Core product transformation clearly stated above the fold</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>At least one bonus that speeds up the core result</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Price anchored to time or outcome saved — not just cost</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>At least one before/after example or social proof</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>5-post launch campaign planned and ready</li>
+      </ul>
+      <p class="section-label">AI prompts</p>
+      <div class="prompt-block">
+        <div class="prompt-label">Sales page copy prompt</div>
+        <div class="prompt-text" id="p5a">Write a short sales description for my [PRODUCT_TYPE] for [AUDIENCE]. Their main struggle: [PAIN]. The outcome they get: [OUTCOME]. Include: a headline, a 2-sentence hook, what's inside (3–5 bullets), who it's for, and a call to action. Tone: confident, warm, direct. Avoid hype — speak to outcomes, not excitement.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p5a', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">5-post social launch campaign</div>
+        <div class="prompt-text" id="p5b">Create a 5-post social media campaign to launch my [PRODUCT_TYPE] on [TOPIC] for [AUDIENCE]. Use these 5 angles: (1) problem/pain, (2) result/transformation, (3) what's inside, (4) objection-busting, (5) final call to action. Each post 3–5 sentences, conversational, written for Instagram. No clichés, no hype. Outcome buyers get: [OUTCOME].</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p5b', this)">Copy filled prompt</button></div>
+      </div>
+    </div>
+    <div class="phase-footer">
+      <button class="btn-prev" onclick="goToPhase(4)">← Package</button>
+      <div class="progress-track"><div class="progress-fill" style="width:83%"></div></div>
+      <button class="btn-next" onclick="goToPhase(6)">Phase 6: Scale →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 6 -->
+  <div class="phase-panel" id="panel-6">
+    <div class="card">
+      <div class="card-header"><div class="phase-badge">06</div><div><h2>Scale</h2><p>Scaling isn't more hustle — it's systems, offers, and leverage working together.</p></div></div>
+      <p class="section-label">The 3 scale pillars</p>
+      <div class="pillars-grid">
+        <div class="pillar-card"><span class="pillar-icon">⚙️</span><span class="pillar-title">Delivery systems</span><span class="pillar-sub">Automated fulfillment — files, access, onboarding</span></div>
+        <div class="pillar-card"><span class="pillar-icon">📣</span><span class="pillar-title">Marketing systems</span><span class="pillar-sub">Content + email engines — always-on promotion</span></div>
+        <div class="pillar-card"><span class="pillar-icon">🪜</span><span class="pillar-title">Offer systems</span><span class="pillar-sub">Ladders + upsells — starter to premium</span></div>
+      </div>
+      <p class="section-label">Retention checklist</p>
+      <ul class="checklist">
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Design a complementary product that's a natural next step</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Write a post-purchase nurture email sequence (3 emails minimum)</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Ask buyers "where did you get stuck?" — let data drive your next product</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Offer an upgrade or continuity product at or after purchase</li>
+        <li onclick="toggleCheck(this)"><span class="check-box"><svg class="check-icon" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Update products periodically — keep them current and valuable</li>
+      </ul>
+      <p class="section-label">AI prompts</p>
+      <div class="prompt-block">
+        <div class="prompt-label">Post-purchase email sequence</div>
+        <div class="prompt-text" id="p6a">Write a 3-email post-purchase sequence for buyers of my [PRODUCT_TYPE] on [TOPIC]. Email 1 (sent immediately): welcome + how to start. Email 2 (sent day 3): implementation tip + encouragement. Email 3 (sent day 7): check-in + introduce my next product. Tone: personal, warm, coach-like. Each email under 150 words. Subject lines included. Audience: [AUDIENCE].</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p6a', this)">Copy filled prompt</button></div>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-label">Ecosystem planner prompt</div>
+        <div class="prompt-text" id="p6b">I sell a [PRODUCT_TYPE] on [TOPIC] to [AUDIENCE]. Help me design a 4-product ecosystem that takes my buyer from beginner to advanced. For each product, suggest: a product type, a working title, the transformation it delivers, and how it connects to the product before and after it. Include free, entry, core, and premium tiers. Make each feel like a natural next step.</div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p6b', this)">Copy filled prompt</button></div>
+      </div>
+    </div>
+    <div class="completion-banner">
+      <h3>All 6 phases complete. ✦</h3>
+      <p>AI writes the drafts. You orchestrate the product. Speed + structure is what makes this a game-changer.</p>
+      <a href="https://jadejanosi.com/offers/" class="btn-completion">Explore more tools →</a>
+    </div>
+    <div class="phase-footer">
+      <button class="btn-prev" onclick="goToPhase(5)">← Sell</button>
+      <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+      <button class="btn-next" onclick="goToPhase(0)">Start over</button>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>A tool by <a href="https://jadejanosi.com">Jade Janosi</a> · Part of <a href="https://jadejanosi.com/product/build-it-with-ai/">Build It With AI</a></p>
+</footer>
+
+<div class="toast" id="toast">Prompt copied!</div>
+
+<script>
+  function getVals() {
+    return {
+      AUDIENCE: document.getElementById('inp-audience').value.trim() || 'your audience',
+      TOPIC: document.getElementById('inp-topic').value.trim() || 'your topic',
+      PAIN: document.getElementById('inp-pain').value.trim() || 'their pain',
+      OUTCOME: document.getElementById('inp-outcome').value.trim() || 'their desired outcome',
+      PRODUCT_TYPE: document.getElementById('inp-type').value,
+      OBSTACLE: document.getElementById('inp-obstacle').value.trim() || 'common obstacles'
+    };
+  }
+
+  function fillPrompt(raw) {
+    const v = getVals();
+    return raw
+      .replace(/\[AUDIENCE\]/g, v.AUDIENCE)
+      .replace(/\[TOPIC\]/g, v.TOPIC)
+      .replace(/\[PAIN\]/g, v.PAIN)
+      .replace(/\[OUTCOME\]/g, v.OUTCOME)
+      .replace(/\[PRODUCT_TYPE\]/g, v.PRODUCT_TYPE)
+      .replace(/\[OBSTACLE\]/g, v.OBSTACLE);
+  }
+
+  function copyFilled(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const text = fillPrompt(el.textContent);
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Copied to clipboard!');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('Copied to clipboard!');
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function toggleCheck(li) { li.classList.toggle('checked'); }
+
+  function goToPhase(n) {
+    for (let i = 0; i < 7; i++) {
+      const panel = document.getElementById('panel-' + i);
+      const tab = document.getElementById('tab-' + i);
+      if (panel) panel.classList.toggle('active', i === n);
+      if (tab) {
+        tab.classList.remove('active', 'done');
+        if (i === n) tab.classList.add('active');
+        else if (i < n) tab.classList.add('done');
+      }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function generateBlueprint() {
+    const v = getVals();
+    const out = document.getElementById('blueprint-output');
+    const content = document.getElementById('bp-content');
+    const btn = document.getElementById('gen-btn');
+    out.style.display = 'block';
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    content.innerHTML = '<div class="bp-loading"><div class="spinner"></div> Building your product blueprint...</div>';
+
+    const prompt = `You are a digital product strategist. A creator is building a digital product with these details:
+- Audience: ${v.AUDIENCE}
+- Topic: ${v.TOPIC}
+- Their pain: ${v.PAIN}
+- Desired outcome: ${v.OUTCOME}
+- Product type: ${v.PRODUCT_TYPE}
+- Obstacle to avoid: ${v.OBSTACLE}
+
+Generate a concise product blueprint with these clearly labelled sections:
+
+TRANSFORMATION STATEMENT
+One specific, punchy sentence: "This [product type] helps [audience] go from [pain] to [outcome] without [obstacle]."
+
+PRODUCT NAME OPTIONS
+3 specific, outcome-driven name ideas with a brief reason for each.
+
+FRAMEWORK
+A named 4-5 stage framework — give each stage a memorable name and one-sentence description.
+
+CORE PROMISE
+One sentence capturing the product's central value proposition.
+
+Keep it tight, specific, and actionable. No fluff.`;
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await response.json();
+      const text = data.content && data.content[0] ? data.content[0].text : 'Something went wrong — please try again.';
+      content.textContent = text;
+    } catch(e) {
+      content.textContent = 'Could not connect. Please try again.';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✦ Generate my product blueprint';
+  }
+</script>
+</body>
+</html>
