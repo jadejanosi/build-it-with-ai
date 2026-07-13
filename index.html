@@ -156,6 +156,14 @@
   .btn-copy { font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; padding: 8px 16px; background: var(--violet-700); color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
   .btn-copy:hover { background: var(--violet-600); }
 
+
+  /* INLINE GENERATE */
+  .btn-run { font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; padding: 8px 16px; background: linear-gradient(100deg,#E2562D,#4DE8E0); color: #12102B; border: none; border-radius: 5px; cursor: pointer; transition: opacity 0.15s; }
+  .btn-run:hover { opacity: 0.9; }
+  .btn-run:disabled { opacity: 0.6; cursor: not-allowed; }
+  .prompt-output { display: none; background: var(--violet-50); border: 1px solid var(--violet-200); border-radius: 8px; padding: 18px; margin-top: 12px; }
+  .prompt-output-content { font-size: 0.86rem; color: var(--ink-mid); line-height: 1.7; white-space: pre-wrap; }
+
   /* MISC */
   .info-box { background: var(--violet-50); border-left: 3px solid var(--violet-600); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-bottom: 4px; font-size: 0.88rem; color: var(--ink-mid); line-height: 1.6; }
   .info-box strong { color: var(--violet-700); font-weight: 700; }
@@ -316,12 +324,12 @@
       <div class="prompt-block">
         <div class="prompt-label">Audience research prompt</div>
         <div class="prompt-text" id="p1a">Act as a market research analyst. I'm creating a digital product for [AUDIENCE] about [TOPIC]. Analyze what problems they struggle with most, what language they use to describe those problems, what solutions already exist, and what gaps are most common. Give me 5 pain points, 5 phrases they likely use, and 3 product angles I could take.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p1a', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p1a', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p1a', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p1a"><div class="prompt-output-content" id="outc-p1a"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">Transformation statement generator</div>
         <div class="prompt-text" id="p1b">Write 5 transformation statements for a digital product using this format: "This product helps [WHO] go from [PAIN STATE] to [DESIRED RESULT] without [COMMON OBSTACLE]." My audience is [AUDIENCE], my topic is [TOPIC], their pain is [PAIN], the outcome is [OUTCOME], and the obstacle to avoid is [OBSTACLE]. Make each feel specific, believable, and outcome-focused.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p1b', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p1b', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p1b', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p1b"><div class="prompt-output-content" id="outc-p1b"></div></div>
       </div>
     </div>
     <div class="phase-footer">
@@ -352,12 +360,12 @@
       <div class="prompt-block">
         <div class="prompt-label">Framework design prompt</div>
         <div class="prompt-text" id="p2a">I'm creating a [PRODUCT_TYPE] that helps [AUDIENCE] go from [PAIN] to [OUTCOME]. Design a named framework for this product with 4–6 stages or pillars. For each stage, give it a memorable name, a one-sentence description, and the key action the buyer takes. Make it feel proprietary and memorable — like something I could name and brand.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p2a', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p2a', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p2a', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p2a"><div class="prompt-output-content" id="outc-p2a"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">Outline generator prompt</div>
         <div class="prompt-text" id="p2b">Create a complete product outline for a [PRODUCT_TYPE] on [TOPIC] for [AUDIENCE]. Include section names, what each section teaches or delivers, and what the buyer can do after completing it. Structure it so there's clear progression from confusion to confidence. Keep it tight — prioritize outcomes over volume.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p2b', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p2b', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p2b', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p2b"><div class="prompt-output-content" id="outc-p2b"></div></div>
       </div>
     </div>
     <div class="phase-footer">
@@ -392,17 +400,17 @@
       <div class="prompt-block">
         <div class="prompt-label">Section drafter prompt</div>
         <div class="prompt-text" id="p3a">Write the content for [SECTION NAME] of my [PRODUCT_TYPE] on [TOPIC]. My audience is [AUDIENCE] and their biggest struggle with this section is [PAIN]. Include: a brief explanation, a concrete example, 3 actionable steps, and a reflection question. Tone: warm, direct, practical — not academic. Write for someone who is smart but time-poor.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3a', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3a', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p3a', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p3a"><div class="prompt-output-content" id="outc-p3a"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">Multi-version intro generator</div>
         <div class="prompt-text" id="p3b">Write 3 versions of the introduction for my [PRODUCT_TYPE] on [TOPIC]: one story-driven, one problem-first, and one results-first. My buyer is [AUDIENCE] and the outcome they get is [OUTCOME]. I'll combine the best elements from each version.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3b', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3b', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p3b', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p3b"><div class="prompt-output-content" id="outc-p3b"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">Worksheet builder prompt</div>
         <div class="prompt-text" id="p3c">Create a 1-page worksheet for the [SECTION NAME] section of my product. Include: a brief context sentence, 3–5 fill-in-the-blank prompts, 2 short-answer questions, and a "done when" completion checkbox. Format it so someone can complete it in under 10 minutes. Topic: [TOPIC]. Audience: [AUDIENCE].</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3c', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p3c', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p3c', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p3c"><div class="prompt-output-content" id="outc-p3c"></div></div>
       </div>
     </div>
     <div class="phase-footer">
@@ -429,12 +437,12 @@
       <div class="prompt-block">
         <div class="prompt-label">Product name brainstorm</div>
         <div class="prompt-text" id="p4a">Brainstorm 10 name options for a [PRODUCT_TYPE] that helps [AUDIENCE] achieve [OUTCOME]. Make names specific, outcome-driven, and memorable. Mix styles: some descriptive, some aspirational, some framework-named. Flag the top 3 with a reason why they'd stand out in a crowded market.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p4a', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p4a', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p4a', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p4a"><div class="prompt-output-content" id="outc-p4a"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">"Read Me First" onboarding writer</div>
         <div class="prompt-text" id="p4b">Write a friendly "Read Me First" document for my [PRODUCT_TYPE] for [AUDIENCE] on [TOPIC]. Welcome the buyer, explain what's included, tell them exactly where to start, give one tip for getting the most value, and set expectations for what they'll achieve. Tone: encouraging, clear, and human. Under 200 words.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p4b', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p4b', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p4b', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p4b"><div class="prompt-output-content" id="outc-p4b"></div></div>
       </div>
     </div>
     <div class="phase-footer">
@@ -472,12 +480,12 @@
       <div class="prompt-block">
         <div class="prompt-label">Sales page copy prompt</div>
         <div class="prompt-text" id="p5a">Write a short sales description for my [PRODUCT_TYPE] for [AUDIENCE]. Their main struggle: [PAIN]. The outcome they get: [OUTCOME]. Include: a headline, a 2-sentence hook, what's inside (3–5 bullets), who it's for, and a call to action. Tone: confident, warm, direct. Avoid hype — speak to outcomes, not excitement.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p5a', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p5a', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p5a', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p5a"><div class="prompt-output-content" id="outc-p5a"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">5-post social launch campaign</div>
         <div class="prompt-text" id="p5b">Create a 5-post social media campaign to launch my [PRODUCT_TYPE] on [TOPIC] for [AUDIENCE]. Use these 5 angles: (1) problem/pain, (2) result/transformation, (3) what's inside, (4) objection-busting, (5) final call to action. Each post 3–5 sentences, conversational, written for Instagram. No clichés, no hype. Outcome buyers get: [OUTCOME].</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p5b', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p5b', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p5b', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p5b"><div class="prompt-output-content" id="outc-p5b"></div></div>
       </div>
     </div>
     <div class="phase-footer">
@@ -509,12 +517,12 @@
       <div class="prompt-block">
         <div class="prompt-label">Post-purchase email sequence</div>
         <div class="prompt-text" id="p6a">Write a 3-email post-purchase sequence for buyers of my [PRODUCT_TYPE] on [TOPIC]. Email 1 (sent immediately): welcome + how to start. Email 2 (sent day 3): implementation tip + encouragement. Email 3 (sent day 7): check-in + introduce my next product. Tone: personal, warm, coach-like. Each email under 150 words. Subject lines included. Audience: [AUDIENCE].</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p6a', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p6a', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p6a', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p6a"><div class="prompt-output-content" id="outc-p6a"></div></div>
       </div>
       <div class="prompt-block">
         <div class="prompt-label">Ecosystem planner prompt</div>
         <div class="prompt-text" id="p6b">I sell a [PRODUCT_TYPE] on [TOPIC] to [AUDIENCE]. Help me design a 4-product ecosystem that takes my buyer from beginner to advanced. For each product, suggest: a product type, a working title, the transformation it delivers, and how it connects to the product before and after it. Include free, entry, core, and premium tiers. Make each feel like a natural next step.</div>
-        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p6b', this)">Copy filled prompt</button></div>
+        <div class="prompt-actions"><button class="btn-copy" onclick="copyFilled('p6b', this)">Copy filled prompt</button><button class="btn-run" onclick="generatePromptOutput('p6b', this)">✦ Generate here</button></div><div class="prompt-output" id="out-p6b"><div class="prompt-output-content" id="outc-p6b"></div></div>
       </div>
     </div>
     <div class="completion-banner">
@@ -601,6 +609,40 @@
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+  async function generatePromptOutput(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const text = fillPrompt(el.textContent);
+    const outBox = document.getElementById('out-' + id);
+    const outContent = document.getElementById('outc-' + id);
+    outBox.style.display = 'block';
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Generating...';
+    outContent.innerHTML = '<div class="bp-loading"><div class="spinner"></div> Generating...</div>';
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: text }]
+        })
+      });
+      const data = await response.json();
+      const out = data.content && data.content[0] ? data.content[0].text : 'Something went wrong — please try again.';
+      outContent.textContent = out;
+    } catch(e) {
+      outContent.textContent = 'Could not connect. Please try again.';
+    }
+
+    btn.disabled = false;
+    btn.textContent = orig;
   }
 
   async function generateBlueprint() {
